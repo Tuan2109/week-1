@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Guess Number</title>
+	<script type="text/javascript">
+		var count = 0;
+		var numberGuess;
+		function init() {
+			//init number for guess
+			numberGuess = Math.floor(Math.random() * 100 + 1);
+			function check(num) {
+				let result;
+				if (num == numberGuess) {
+					result = "equal";
+				} else if (num > numberGuess) {
+					result = "greater";
+				} else {
+					result = "less";
+				}
+				return result;
+			}
+			function endgame() {
+				document.getElementById('number').disabled = true;
+				document.getElementById('btnGuess').style.display = 'none';
+				document.getElementById('btnRestart').style.display = 'block';
+			}
+			//init event button
+			let buttonGuess = document.getElementById('btnGuess');
+			buttonGuess.addEventListener('click', function () {
+				let text = document.getElementById('message');
+				let num = document.getElementById('number').value;
+				if (num != "" && num != undefined) {
+					let para = document.createElement("P");
+					para.innerHTML = num;
+					document.getElementById("pastGuesses").appendChild(para);
+					document.getElementById('number').value = "";
+					count++;
+					if (count == 10) {
+						endgame();
+					}
+					let result = check(num);
+					let left = 10 - count;
+					switch (result) {
+						case "equal":
+							text.innerHTML = "Congratulations! " + numberGuess + " was the correct answer! It took you " + count + " tries to guess the answer";
+							text.style.backgroundColor = colorText("equal");
+							endgame();
+							break;
+						case "greater":
+							text.innerHTML = "Your guess was too high, guess lower. You have " + left + " guesses left";
+							text.style.backgroundColor = colorText("greater");
+							break;
+						case "less":
+							text.innerHTML = "Your guess was too low, guess higher. You have " + left + " guesses left";
+							text.style.backgroundColor = colorText("less");
+							break;
+					}
+					if (count == 10 && result != "equal") {
+						text.innerHTML = "Bạn đã đoán sai quá 10 lần, số chính xác là " + numberGuess;
+						text.style.backgroundColor = colorText("over");
+					}
+				}
+			});
+			let input = document.getElementById('number');
+			input.addEventListener('keypress', function (e) {
+				if (e.keyCode == 13) {
+					buttonGuess.click();
+				}
+			});
+			buttonStart = document.getElementById('btnStart');
+			buttonStart.addEventListener('click', function () {
+				document.getElementById('btnStart').style.display = 'none';
+				document.getElementById('startGame').style.display = 'block';
+			});
+			buttonRestart = document.getElementById('btnRestart');
+			buttonRestart.addEventListener('click', function () {
+				document.getElementById('btnRestart').style.display = 'none';
+				document.getElementById('btnGuess').style.display = 'block';
+				document.getElementById('number').disabled = false;
+				document.getElementById('pastGuesses').innerHTML = "";
+				document.getElementById('message').innerHTML = "Guess Game";
+				document.getElementById('number').value = "";
+				document.getElementById('message').style.backgroundColor = colorText("default");
+				count = 0;
+				numberGuess = Math.floor(Math.random() * 100 + 1);
+			});
+			function colorText(message) {
+				let color;
+				switch (message) {
+					case "equal":
+						color = "pink";
+						break;
+					case "greater":
+						color = "green";
+						break;
+					case "less":
+						color = "yellow";
+						break;
+					case "over":
+						color = "red";
+						break;
+					case "default":
+						color = "transparent";
+						break;
+				}
+				return color;
+			}
+		}
+	</script>
+	<style type="text/css">
+		#numberGuess {
+			display: none;
+		}
+	</style>
+</head>
+
+<body onload="init()">
+	<div>
+		<span id="message">Guess Game</span>
+		<div id="pastGuesses"></div>
+	</div>
+	<!-- <p id="numberGuess"></p> -->
+	<!-- <p id="contentGuess">Let guess</p> -->
+	<button id="btnStart">Start</button>
+	<div id="startGame" style="display: none">
+		<p>Input Number <input type="number" id="number"></p>
+		<button id="btnGuess">Guess</button>
+	</div>
+	<button id="btnRestart" style="display: none">Restart</button>
+</body>
+
+</html>
